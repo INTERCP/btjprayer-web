@@ -64,6 +64,8 @@
 	.modal a.close-modal {
 		top: 0;
 		right: 0;
+		background: url('<?php bloginfo( 'stylesheet_directory' ); ?>/img/close.png');
+		background-size: 30px 30px;
 	}
 
 	.modal_button {
@@ -109,11 +111,15 @@
 		display: inline-block;
 		margin-left: 15px;
 	}
+
+	#p4m_body img {
+		max-width: 100%;
+	}
 	</style>
 
 	<div style="float:right">
 		<div class="gap_button modal_button"><a href="#gap_view" onclick="display_tap(0)" rel="modal:open"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/img/ic_gap.png" alt="GAP" style="width:50px;" /></a></div>
-		<div class="p4m_button modal_button"><a href="#p4m_view" onclick="display_p4m_tap(0)" rel="modal:open">PRAYFOR<br/>MUSLIM</a></div>
+		<div class="p4m_button modal_button"><a href="#p4m_view" onclick="load_p4m('korean')" rel="modal:open"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/img/ic_p4m.png" alt="PRAYFORMUSLIMS" style="width:50px; margin-top: 1px; margin-left: 3px;" /></a></div>
 	</div>
 	<div style="clear:both"></div>
 
@@ -144,6 +150,7 @@
 				<li><a href="#" onclick="load_p4m('japanese');">일본어</a></li>
 			</ul>
 		</div>
+		<div style="clear:both;"></div>
 		<div id="p4m_body" class="modal_body"></div>
 	</div>
 </footer>
@@ -215,27 +222,58 @@
 	}
 
 	function load_p4m(language) {
-		$.get('/api/core/get_category_posts/?slug=' + p4m_slug[language] + '&count=30', function(data) {
-			var posts = data['posts'];
+		today = new Date();
+		d_day = new Date('Jun 6 2016 00:00:00');
+		days = Math.floor((today - d_day) / 1000 / 60 / 60 / 24);
+		// days = 0;
+		if(days > 0) {
+			$.get('/api/core/get_category_posts/?slug=' + p4m_slug[language] + '&count=30', function(data) {
+				var posts = data['posts'];
 
-			var p4m_inner_html = '';
-			var p4m_nav_html = '';
+				var p4m_inner_html = '';
+				var p4m_nav_html = '';
 
-			for (var i in posts) {
-				var post = posts[i];
 
-				p4m_nav_html = '<li><a href="#" onclick="display_p4m_tap(' + i + ')">' + 'Day ' + (30 - i) + '</a></li>' + p4m_nav_html;
-				p4m_inner_html += '<div class="modal_tab" id=p4m_' + i + '>';
-				p4m_inner_html += post['title'];
-				p4m_inner_html += post['content'];
-				p4m_inner_html += '</div>';
-			}
 
-			$('#p4m_body').html(p4m_inner_html);
-			$('#p4m_nav').html(p4m_nav_html);
+				for (var i in posts) {
+					var post = posts[i];
+					if(29 - i <= days) {
+						p4m_nav_html = '<li><a href="#" onclick="display_p4m_tap(' + i + ')">' + 'Day ' + (30 - i) + '</a></li>' + p4m_nav_html;
+					}
 
-			display_p4m_tap(0);
-		}, 'json');
+					p4m_inner_html += '<div class="modal_tab" id=p4m_' + i + '>';
+					p4m_inner_html += '<h1 class="entry-title">' + post['title'] + '</h1>';
+					p4m_inner_html += post['content'];
+					p4m_inner_html += '</div>';
+				}
+
+
+
+				$('#p4m_body').html(p4m_inner_html);
+				$('#p4m_nav').html(p4m_nav_html);
+
+				display_p4m_tap(29-days);
+			}, 'json');
+		} else {
+			$('.p4m_button').hide();
+			dday = 0 - days;
+
+			$('#p4m_language_selector').hide();
+			$('#p4m_nav').hide();
+
+			$.get('/api/core/get_category_posts/?slug=today&count=1', function(data) {
+				var posts = data['posts'];
+				var p4m_inner_html = '';
+
+				for (var i in posts) {
+					var post = posts[i];
+					p4m_inner_html += '<h1 class="entry-title">D-' + dday + ' ' + post['title'] + '</h1>';
+					p4m_inner_html += post['content'];
+				}
+
+				$('#p4m_body').html(p4m_inner_html);
+			}, 'json');
+		}
 	}
 
 	load_p4m('korean');
