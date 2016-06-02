@@ -115,6 +115,10 @@
 	#p4m_body img {
 		max-width: 100%;
 	}
+
+	#p4m_comment table td, #p4m_comment table tr, #p4m_comment table {
+		border: 0 none;
+	}
 	</style>
 
 	<div style="float:right">
@@ -151,7 +155,32 @@
 			</ul>
 		</div>
 		<div style="clear:both;"></div>
-		<div id="p4m_body" class="modal_body"></div>
+		<div class="modal_body">
+			<div id="p4m_body"></div>
+			<br/>
+			<div id="p4m_comment">
+				<h4>기도문 남기기</h4>
+				<form action="" method="GET" id="p4m_comment_form">
+					<table>
+						<tr>
+							<td>이름</td>
+							<td><input type="text" name="name"/></td>
+						</tr>
+						<tr>
+							<td>이메일</td>
+							<td><input type="text" name="email"/></td>
+						</tr>
+						<tr>
+							<td>기도문</td>
+							<td><textarea name="content"></textarea></td>
+						</tr>
+						<tr>
+							<td colspan="2" style="padding-top:8px;"><input type="submit" value="기도문 남기기" style="background-color: #ff4040"/></td>
+						</tr>
+					</table>
+				</form>
+			</div>
+		</div>
 	</div>
 </footer>
 <?php endif; ?>
@@ -186,9 +215,13 @@
 		$('#gap_'+tab_index).show();
 	}
 
+	var p4m_current_post;
+	var p4m_current_tab;
 	function display_p4m_tap(tab_index) {
 		$('.modal_tab').hide();
 		$('#p4m_'+tab_index).show();
+		p4m_current_post = p4m_post_id[tab_index];
+		p4m_current_tab = tab_index;
 	}
 
 	$.get('/api/bible.php?day=<?php echo get_day_of_year(); ?>&escape=true', function(data) {
@@ -221,12 +254,15 @@
 		'japanese': '16p4mjap'
 	}
 
+	var p4m_post_id = [];
+	var current_language;
 	function load_p4m(language) {
+		current_language = language;
 		today = new Date();
 		d_day = new Date('Jun 6 2016 00:00:00');
 		days = Math.floor((today - d_day) / 1000 / 60 / 60 / 24);
 		// days = 0;
-		if(days > 0) {
+		if(days >= 0) {
 			$.get('/api/core/get_category_posts/?slug=' + p4m_slug[language] + '&count=30', function(data) {
 				var posts = data['posts'];
 
@@ -237,13 +273,18 @@
 
 				for (var i in posts) {
 					var post = posts[i];
+					p4m_post_id[i] = post['id'];
 					if(29 - i <= days) {
 						p4m_nav_html = '<li><a href="#" onclick="display_p4m_tap(' + i + ')">' + 'Day ' + (30 - i) + '</a></li>' + p4m_nav_html;
 					}
 
 					p4m_inner_html += '<div class="modal_tab" id=p4m_' + i + '>';
 					p4m_inner_html += '<h1 class="entry-title">' + post['title'] + '</h1>';
-					p4m_inner_html += post['content'];
+					p4m_inner_html += post['content'] + '<br/><br/><h4>기도문</h4>';
+					comments = post['comments'];
+					for(var j in comments) {
+						p4m_inner_html += '<p><span style="font-weight: bold;">' + comments[j]['name'] + '</span><br/>' + comments[j]['content'] + '</p>';
+					}
 					p4m_inner_html += '</div>';
 				}
 
@@ -277,6 +318,38 @@
 	}
 
 	load_p4m('korean');
+
+	function submit_comment(event) {
+		event.preventDefault();
+
+		var comment_name = $('#p4m_comment input[name=name]').val();
+		var comment_email = $('#p4m_comment input[name=email]').val();
+		var comment_content = $('#p4m_comment textarea[name=content]').val();
+
+		var arguments = $('#p4m_comment_form').serialize();
+
+		if(comment_name == '') {
+			alert('이름을 입력해주세요');
+		} else if(comment_email == '') {
+			alert('이메일을 입력해주세요');
+		} else if(comment_content == '') {
+			alert('기도문 내용을 입력해주세요');
+		} else {
+			$.get('/api/respond/submit_comment?post_id=' + p4m_current_post + '&' + arguments, function(data) {
+				load_p4m(current_language);
+				display_p4m_tap(p4m_current_tab);
+			}, 'json');
+		}
+
+
+	}
+
+	$('#p4m_comment').submit(submit_comment);
 </script>
 </body>
 </html>
+
+
+<!--
+btjprayer.net/api/respond/submit_comment/?post_id=11823&name=이준원&email=esanzy87@gmail.com&content=기도문테스트
+-->
