@@ -65,7 +65,9 @@
 		top: 0;
 		right: 0;
 		background: url('<?php bloginfo( 'stylesheet_directory' ); ?>/img/close.png');
-		background-size: 30px 30px;
+		background-size: 20px 20px;
+        width: 20px;
+        height: 20px;
 	}
 
 	.modal_button {
@@ -79,6 +81,10 @@
 		font-weight: bold;
 		color: white;
 	}
+        
+    #gap_body p {
+        font-size: 16px;
+    }
 
 	.gap_button {
 		bottom: 20px;
@@ -119,11 +125,25 @@
 	#p4m_comment table td, #p4m_comment table tr, #p4m_comment table {
 		border: 0 none;
 	}
+        
+    .videowrapper {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 */
+        padding-top: 25px;
+        height: 0;
+    }
+    .videowrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 	</style>
 
 	<div style="float:right">
 		<div class="gap_button modal_button"><a href="#gap_view" onclick="display_tap(0)" rel="modal:open"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/img/ic_gap.png" alt="GAP" style="width:50px;" /></a></div>
-		<div class="p4m_button modal_button"><a href="#p4m_view" onclick="load_p4m('korean')" rel="modal:open"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/img/ic_p4m.png" alt="PRAYFORMUSLIMS" style="width:50px; margin-top: 1px; margin-left: 3px;" /></a></div>
+		<div class="p4m_button modal_button"><a href="#p4m_view" onclick="load_p4m('korean');" rel="modal:open"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/img/ic_p4m.png" alt="PRAYFORMUSLIMS" style="width:50px; margin-top: 1px; margin-left: 3px;" /></a></div>
 	</div>
 	<div style="clear:both"></div>
 
@@ -222,6 +242,12 @@
 		$('#p4m_'+tab_index).show();
 		p4m_current_post = p4m_post_id[tab_index];
 		p4m_current_tab = tab_index;
+        
+        if(tab_index == 'video') {
+            $('#p4m_comment').hide();
+        } else {
+            $('#p4m_comment').show();
+        }
 	}
 
 	$.get('/api/bible.php?day=<?php echo get_day_of_year(); ?>&escape=true', function(data) {
@@ -229,7 +255,7 @@
 		var nav_html = '';
 		var index = 0;
 		for(var property in data) {
-			nav_html += '<li><a href="#" onclick="display_tap(' + index + ')">' + property + '</a></li>';
+			nav_html += '<li><a href="#gap_'+ index + '" onclick="display_tap(' + index + ')">' + property + '</a></li>';
 
 			inner_html += '<div class="modal_tab" id=gap_' + index + '>';
 
@@ -256,26 +282,25 @@
 
 	var p4m_post_id = [];
 	var current_language;
+    var days;
 	function load_p4m(language) {
 		current_language = language;
 		today = new Date();
 		d_day = new Date('Jun 6 2016 00:00:00');
 		days = Math.floor((today - d_day) / 1000 / 60 / 60 / 24);
-		// days = 0;
+		days = 3;
+        
 		if(days >= 0) {
 			$.get('/api/core/get_category_posts/?slug=' + p4m_slug[language] + '&count=30', function(data) {
 				var posts = data['posts'];
-
-				var p4m_inner_html = '';
-				var p4m_nav_html = '';
-
-
-
+                var p4m_inner_html = '';
+                var p4m_nav_html = '';
+                
 				for (var i in posts) {
 					var post = posts[i];
 					p4m_post_id[i] = post['id'];
 					if(29 - i <= days) {
-						p4m_nav_html = '<li><a href="#" onclick="display_p4m_tap(' + i + ')">' + 'Day ' + (30 - i) + '</a></li>' + p4m_nav_html;
+						p4m_nav_html = '<li><a href="#p4m_' + i + '" onclick="display_p4m_tap(' + i + ')">' + 'Day ' + (30 - i) + '</a></li>' + p4m_nav_html;
 					}
 
 					p4m_inner_html += '<div class="modal_tab" id=p4m_' + i + '>';
@@ -287,35 +312,34 @@
 					}
 					p4m_inner_html += '</div>';
 				}
-
-
-
-				$('#p4m_body').html(p4m_inner_html);
-				$('#p4m_nav').html(p4m_nav_html);
-
-				display_p4m_tap(29-days);
+                
+                $('#p4m_body').html(p4m_inner_html);
+                $('#p4m_nav').html(p4m_nav_html);
+                
+                load_p4m_video(p4m_nav_html, p4m_inner_html);
+                
+                display_p4m_tap(29-days);
 			}, 'json');
 		} else {
-			$('.p4m_button').hide();
-			dday = 0 - days;
-
 			$('#p4m_language_selector').hide();
-			$('#p4m_nav').hide();
-
-			$.get('/api/core/get_category_posts/?slug=today&count=1', function(data) {
-				var posts = data['posts'];
-				var p4m_inner_html = '';
-
-				for (var i in posts) {
-					var post = posts[i];
-					p4m_inner_html += '<h1 class="entry-title">D-' + dday + ' ' + post['title'] + '</h1>';
-					p4m_inner_html += post['content'];
-				}
-
-				$('#p4m_body').html(p4m_inner_html);
-			}, 'json');
+            load_p4m_video();
+            display_p4m_tap('video');
 		}
 	}
+    
+    function load_p4m_video(nav_html = '', inner_html = '') {
+        nav_html += '<li><a href="#p4m_video" onclick="display_p4m_tap(\'video\')">영상</a></li>';
+        inner_html += '<div class="modal_tab" id=p4m_video>';
+        if(days < 0) {
+            inner_html += '<h1 class="entry-title">D' + days + '</h1>';
+        }
+        inner_html += '<div class="videowrapper">';
+        inner_html += '<iframe width="420" height="315" src="https://www.youtube.com/embed/W2Z7acYGHfM" frameborder="0" allowfullscreen></iframe>';
+        inner_html += '</div></div>';
+            
+        $('#p4m_body').html(inner_html);
+        $('#p4m_nav').html(nav_html);
+    }
 
 	load_p4m('korean');
 
@@ -340,8 +364,6 @@
 				display_p4m_tap(p4m_current_tab);
 			}, 'json');
 		}
-
-
 	}
 
 	$('#p4m_comment').submit(submit_comment);
