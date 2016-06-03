@@ -341,8 +341,6 @@
         $('#p4m_nav').html(nav_html);
     }
 
-	load_p4m('korean');
-
 	function submit_comment(event) {
 		event.preventDefault();
 
@@ -366,7 +364,10 @@
 		}
 	}
 
-	$('#p4m_comment').submit(submit_comment);
+    $(document).ready(function() {
+        load_p4m('korean');
+        $('#p4m_comment').submit(submit_comment);    
+    });
 </script>
 </body>
 </html>
