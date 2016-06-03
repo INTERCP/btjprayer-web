@@ -250,35 +250,38 @@
         }
 	}
 
-	$.get('/api/bible.php?day=<?php echo get_day_of_year(); ?>&escape=true', function(data) {
-		var inner_html = '';
-		var nav_html = '';
-		var index = 0;
-		for(var property in data) {
-			nav_html += '<li><a href="#gap_'+ index + '" onclick="display_tap(' + index + ')">' + property + '</a></li>';
+    function load_gap() {
+        $.get('/api/bible.php?day=<?php echo get_day_of_year(); ?>&escape=true', function(data) {
+            var inner_html = '';
+            var nav_html = '';
+            var index = 0;
+            for(var property in data) {
+                nav_html += '<li><a href="#gap_'+ index + '" onclick="display_tap(' + index + ')">' + property + '</a></li>';
 
-			inner_html += '<div class="modal_tab" id=gap_' + index + '>';
+                inner_html += '<div class="modal_tab" id=gap_' + index + '>';
 
-			for(var i in data[property]) {
-				inner_html += '<p>' + (parseInt(i) + 1) + ' ' + data[property][i] + '</p>';
-			}
+                for(var i in data[property]) {
+                    inner_html += '<p>' + (parseInt(i) + 1) + ' ' + data[property][i] + '</p>';
+                }
 
-			inner_html += '</div>';
-			index++;
-		}
+                inner_html += '</div>';
+                index++;
+            }
 
-		$('#gap_body').html(inner_html);
-		$('#gap_nav').html(nav_html);
+            $('#gap_body').html(inner_html);
+            $('#gap_nav').html(nav_html);
 
-		display_tap(0);
-	}, 'json');
+            display_tap(0);
+        }, 'json');    
+    }
+	
 
 	var p4m_slug = {
 		'korean': '16p4m',
 		'english': '16p4meng',
 		'chinese': '16p4mcn',
 		'japanese': '16p4mjap'
-	}
+	};
 
 	var p4m_post_id = [];
 	var current_language;
@@ -327,7 +330,9 @@
 		}
 	}
     
-    function load_p4m_video(nav_html = '', inner_html = '') {
+    function load_p4m_video(nav_html, inner_html) {
+        if (typeof(nav_html)==='undefined') nav_html = '';
+        if (typeof(inner_html)==='undefined') inner_html = '';
         nav_html += '<li><a href="#p4m_video" onclick="display_p4m_tap(\'video\')">영상</a></li>';
         inner_html += '<div class="modal_tab" id=p4m_video>';
         if(days < 0) {
@@ -365,6 +370,7 @@
 	}
 
     $(document).ready(function() {
+        load_gap();
         load_p4m('korean');
         $('#p4m_comment').submit(submit_comment);    
     });
