@@ -288,7 +288,7 @@
 		today = new Date();
 		d_day = new Date('Jun 6 2016 00:00:00');
 		days = Math.floor((today - d_day) / 1000 / 60 / 60 / 24);
-		days = 3;
+		// days = 3;
         
 		if(days >= 0) {
 			$.get('/api/core/get_category_posts/?slug=' + p4m_slug[language] + '&count=30', function(data) {
