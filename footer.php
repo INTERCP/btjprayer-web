@@ -150,7 +150,11 @@
 	<!-- GAP -->
 	<div id="gap_view" class="modal">
 		<header>
-			<p style="padding: 0 30px; margin-bottom:6px;"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/img/logo_gap_activity.png" alt="GAP" style="width:100px;" /></p>
+			<p style="padding: 0 30px; margin-bottom:6px;">
+                <a href="#gap_0" onclick="display_tap(0)"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/img/logo_gap_activity.png" alt="GAP" style="width:100px;" /></a>
+                <span style="float:right"><a id='ic_gapinfo' href="#gap_info"><img src="<?php bloginfo('stylesheet_directory'); ?>/img/ic_gapinfo.png" alt="갭이란?" style="width: 50px;" /></a></span>
+                <span style="clear:both;"></span>
+            </p>
 			<nav>
 				<ul id="gap_nav" class="horizontal dragscroll"></ul>
 			</nav>
@@ -267,6 +271,11 @@
                 inner_html += '</div>';
                 index++;
             }
+            
+            inner_html += '<div class="modal_tab" id=gap_info>';
+            inner_html += '<img src="<?php bloginfo('stylesheet_directory'); ?>/img/gapinfo.png" style="width: 100%;" />';
+            inner_html += '</div>';
+            
 
             $('#gap_body').html(inner_html);
             $('#gap_nav').html(nav_html);
@@ -372,7 +381,10 @@
     $(document).ready(function() {
         load_gap();
         load_p4m('korean');
-        $('#p4m_comment').submit(submit_comment);    
+        $('#p4m_comment').submit(submit_comment);
+        $('#ic_gapinfo').click(function() {
+            display_tap('info');
+        })
     });
 </script>
 </body>
