@@ -174,8 +174,8 @@
 			<ul>
 				<li><a href="#" onclick="load_p4m('korean');">한국어</a></li>
 				<li><a href="#" onclick="load_p4m('english');">English</a></li>
-				<li><a href="#" onclick="load_p4m('chinese');">중국어</a></li>
-				<li><a href="#" onclick="load_p4m('japanese');">일본어</a></li>
+				<li><a href="#" onclick="load_p4m('chinese');">中文</a></li>
+				<li><a href="#" onclick="load_p4m('japanese');">日本語</a></li>
 			</ul>
 		</div>
 		<div style="clear:both;"></div>
@@ -234,6 +234,24 @@
 		$('#prayer_request_content').slideToggle();
 	});*/
 
+    function is_leap_year(year) {
+        return (((year % 4) == 0) && (((year % 100) != 0) || ((year % 400) == 0)))
+    }
+    
+    function get_day_of_year() {
+        var today = new Date();
+        var from = new Date(today.getFullYear(), 0, 1); // 오늘과 같은 해 1월 1일 0시로 맞춤
+        var diff = today - from; // 1월 1일 이후로 오늘까지 시간 차
+        var day = Math.floor(diff / 1000 / 60 / 60 / 24);
+        
+        // 윤년일 경우 2월 29일 같은 갭본문 반복을 적용해야 함
+        if (is_leap_year(today.getFullYear()) && day > 57) {
+            return day;    
+        } else {
+            return day + 1;
+        }
+    }
+    
 	function display_tap(tab_index) {
 		$('.modal_tab').hide();
 		$('#gap_'+tab_index).show();
@@ -255,7 +273,7 @@
 	}
 
     function load_gap() {
-        $.get('/api/bible.php?day=<?php echo get_day_of_year(); ?>&escape=true', function(data) {
+        $.get('/api/bible.php?day=' + get_day_of_year() + '&escape=true', function(data) {
             var inner_html = '';
             var nav_html = '';
             var index = 0;
