@@ -149,9 +149,11 @@
                   echo '[오늘의 기도] '.$comment->parent_title;
                 elseif ($comment->category == 'nationsjoin') :
                   $title = explode(";", $comment->parent_title)[1];
-                  echo '[종족별기도] '.$title;
+                  echo '[종족별기도] '.$comment->parent_title;
+                elseif ($comment->category == 'columns') :
+                  echo '[BTJ자료실] '.$comment->parent_title;
                 else :
-                  echo $title;
+                  echo $comment->parent_title;
                 endif;
               ?>
               </a></strong> <br/>

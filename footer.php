@@ -398,7 +398,7 @@
     function load_p4m_video(nav_html, inner_html) {
         if (typeof(nav_html)==='undefined') nav_html = '';
         if (typeof(inner_html)==='undefined') inner_html = '';
-        nav_html += '<li><a href="#p4m_video" onclick="display_p4m_tap(\'video\')">영상</a></li>';
+        nav_html = '<li><a href="#p4m_video" onclick="display_p4m_tap(\'video\')">라마단이란?</a></li>' + nav_html;
         inner_html += '<div class="modal_tab" id=p4m_video>';
         if(days < 0) {
             inner_html += '<h1 class="entry-title">D' + days + '</h1>';
