@@ -139,6 +139,10 @@
         width: 100%;
         height: 100%;
     }
+        
+    .modal_tab .entry-title {
+        font-size: 1.5em;
+    }
 	</style>
 
 	<div style="float:right">
@@ -183,25 +187,17 @@
 			<div id="p4m_body"></div>
 			<br/>
 			<div id="p4m_comment">
-				<h4>기도문 남기기</h4>
+				<h4 id="comment_title">기도문 남기기</h4>
 				<form action="" method="GET" id="p4m_comment_form">
-					<table>
-						<tr>
-							<td>이름</td>
-							<td><input type="text" name="name"/></td>
-						</tr>
-						<tr>
-							<td>이메일</td>
-							<td><input type="text" name="email"/></td>
-						</tr>
-						<tr>
-							<td>기도문</td>
-							<td><textarea name="content"></textarea></td>
-						</tr>
-						<tr>
-							<td colspan="2" style="padding-top:8px;"><input type="submit" value="기도문 남기기" style="background-color: #ff4040"/></td>
-						</tr>
-					</table>
+                    <p>
+                        <label for='name' id='label_name'>이름</label><br/>
+                        <input type="text" name="name"/><br/>
+                        <label for='email' id='label_email'>이메일</label><br/>
+                        <input type="text" name="email"/><br/>
+                        <label for='content' id='label_content'>기도문</label><br/>
+                        <textarea name="content"></textarea><br/>
+                    </p>
+                    <input type="submit" id='p4m_comment_submit' value="기도문 남기기" style="background-color: #ff4040"/>
 				</form>
 			</div>
 		</div>
@@ -309,6 +305,47 @@
 		'chinese': '16p4mcn',
 		'japanese': '16p4mjap'
 	};
+    
+    var p4m_comment_label = {
+        'korean': {
+            'title': '기도문 남기기',
+            'name': '이름',
+            'email': '이메일',
+            'content': '기도문',
+            'submit': '기도문 남기기',
+        },
+        'english': {
+            'title': 'Share Prayer Request',
+            'name': 'Name',
+            'email': 'Email',
+            'content': 'Prayer Request',
+            'submit': 'Share',
+        },
+        'chinese': {
+            'title': '写代祷文',
+            'name': '姓名',
+            'email': '邮箱',
+            'content': '祷告文',
+            'submit': '发表',
+        },
+        'japanese': {
+            'title': '祈りの文の投稿',
+            'name': 'お名前',
+            'email': 'メールアドレス',
+            'content': 'お祈り',
+            'submit': '投稿する',
+        },
+        
+    };
+    
+    function change_comment_form_language(language) {
+        var form_label = p4m_comment_label[language];
+        $('#comment_title').html(form_label['title']);
+        $('#label_name').html(form_label['name']);
+        $('#label_email').html(form_label['email']);
+        $('#label_content').html(form_label['content']);
+        $('#p4m_comment_submit').val(form_label['submit']);
+    }
 
 	var p4m_post_id = [];
 	var current_language;
@@ -335,7 +372,7 @@
 
 					p4m_inner_html += '<div class="modal_tab" id=p4m_' + i + '>';
 					p4m_inner_html += '<h1 class="entry-title">' + post['title'] + '</h1>';
-					p4m_inner_html += post['content'] + '<br/><br/><h4>기도문</h4>';
+					p4m_inner_html += post['content'] + '<br/><br/><h4>' + p4m_comment_label[language]['content'] + '</h4>';
 					comments = post['comments'];
 					for(var j in comments) {
 						p4m_inner_html += '<p><span style="font-weight: bold;">' + comments[j]['name'] + '</span><br/>' + comments[j]['content'] + '</p>';
@@ -349,6 +386,7 @@
                 load_p4m_video(p4m_nav_html, p4m_inner_html);
                 
                 display_p4m_tap(29-days);
+                change_comment_form_language(language);
 			}, 'json');
 		} else {
 			$('#p4m_language_selector').hide();

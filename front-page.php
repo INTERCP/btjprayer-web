@@ -146,11 +146,12 @@
               <strong><a style="color: black" href="<?php echo esc_url( get_permalink( $comment->parent ) ); ?>">
               <?php
                 if ($comment->category == 'today') :
-
                   echo '[오늘의 기도] '.$comment->parent_title;
                 elseif ($comment->category == 'nationsjoin') :
                   $title = explode(";", $comment->parent_title)[1];
                   echo '[종족별기도] '.$title;
+                else :
+                  echo $title;
                 endif;
               ?>
               </a></strong> <br/>
