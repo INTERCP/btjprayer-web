@@ -9,7 +9,7 @@
 	.modal {
 		display: none;
 		margin: 0 auto;
-		margin-top: 35px;
+		margin-top: 50px;
 		margin-bottom: 15px;
 		width: 500px;
 		border-radius: 0;
