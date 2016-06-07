@@ -26,7 +26,7 @@
 
 	.modal_body {
 		padding: 15px 30px;
-		height: 80%;
+		height: 75%;
 		overflow-y: auto;
 	}
 
@@ -169,7 +169,7 @@
 	<!-- pray for muslims -->
 	<div id="p4m_view" class="modal">
 		<header>
-			<p style="padding: 0 30px; margin-bottom:6px;"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/img/logo_p4m.png" alt="PRAYFORMUSLIM" style="width:150px; margin-left: -10px; margin-top: 15px; margin-bottom:5px;" /></p>
+			<p style="padding: 0 30px; margin-bottom:6px;"><img src="<?php bloginfo( 'stylesheet_directory' ); ?>/img/logo_p4m.png" alt="PRAYFORMUSLIM" style="width:220px; margin-top: 15px; margin-bottom:5px;" /></p>
 			<nav>
 				<ul id="p4m_nav" class="horizontal dragscroll"></ul>
 			</nav>
