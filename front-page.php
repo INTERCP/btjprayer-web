@@ -3,16 +3,16 @@
   <?php
     $cat_id = get_category_by_slug('today');
     $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-    $args = array( 'posts_per_page' => 3, 'paged' => $paged, 'category' => $cat_id->term_id );
+    $args = array( 'posts_per_page' => 1, 'paged' => $paged, 'category' => $cat_id->term_id );
     $myposts = get_posts( $args );
   ?>
 
   <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
     <!-- Indicators -->
     <ol class="carousel-indicators">
-      <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+      <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li><!--
       <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-      <li data-target="#carousel-example-generic" data-slide-to="2"></li><!--
+      <li data-target="#carousel-example-generic" data-slide-to="2"></li>
       <li data-target="#carousel-example-generic" data-slide-to="3"></li>
       <li data-target="#carousel-example-generic" data-slide-to="4"></li>
       -->
