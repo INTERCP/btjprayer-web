@@ -146,4 +146,18 @@ function testDB() {
 	}
 	*/
 }
+
+function get_print_new_script() {
+    $obj_category = get_the_category();
+    $term_id = $obj_category[0]->term_id;
+    $dif_day = "-3";
+    // 종족기도는 3일간 new 표시
+    if( $term_id == get_category_by_slug('nationsjoin')) {		
+        $dif_day = "-3";
+    }
+    // New 표시
+    $sub_date = substr( $post->post_date , 0, 10);
+    $script_str = "<script>print_new( \"".$sub_date."\", $dif_day );</script>";
+    return $script_str;
+}
 ?>

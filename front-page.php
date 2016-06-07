@@ -20,9 +20,20 @@
 
     <!-- Wrapper for slides -->
     <div class="carousel-inner" role="listbox">
-
+        <div class="item active">
+            <a href="http://www.btjprayer.net/archives/12662"><?php echo get_the_post_thumbnail(12662); ?></a>
+            
+            <div class="carousel-caption">
+                <p>
+                    <span class="caption-category">[라마단] </span>
+                    16. 6. 6 ~ 7.5
+                </p>
+                <p><span class="caption-title"><a href="http://www.btjprayer.net/archives/12662">라마단이란?</a></span></p>
+            </div>
+        </div>
       <?php foreach ( $myposts as $i=>$post ) : setup_postdata( $post ); ?>
-        <div class="item <?php if($i == 0): ?>active<?php endif;?>" >
+        <!-- 라마단 끝나면 $i == 0으로 바꿔야 함. -->
+        <div class="item <?php if($i == -1): ?>active<?php endif;?>" >
           <?php if( has_post_thumbnail() ) : ?>
             <a href="<?php echo esc_url( get_permalink() ); ?>"><?php the_post_thumbnail(); ?></a>
 
@@ -32,14 +43,14 @@
 
             <?php
               $obj_category = get_the_category();
-        			$term_id = $obj_category[0]->term_id;
-        			$dif_day = "-1";
-        			if( $term_id == '6') {		// 종족기도만 -3
-        				$dif_day = "-3";
-        			}
-        			// New 표시
-        			$sub_date = substr( $post->post_date , 0, 10);
-        			$script_str = "<script>print_new( \"".$sub_date."\", $dif_day );</script>";
+              $term_id = $obj_category[0]->term_id;
+              $dif_day = "-1";
+              if( $term_id == '6') {		// 종족기도만 -3
+                $dif_day = "-3";
+              }
+              // New 표시
+              $sub_date = substr( $post->post_date , 0, 10);
+              $script_str = "<script>print_new( \"".$sub_date."\", $dif_day );</script>";
             ?>
             <p class="caption-title"><?php the_title('<a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a> '.$script_str); ?></p>
           </div>
