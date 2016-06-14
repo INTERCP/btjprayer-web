@@ -457,4 +457,8 @@ a:link, a:visited {
     .entry-content p {
         font-size: 1.25em;
     }
+    
+    .entry-content em, .entry-content ol li {
+        font-size: 1.5em;
+    }
 }
