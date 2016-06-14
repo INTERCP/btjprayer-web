@@ -452,3 +452,9 @@ a:link, a:visited {
 .main-content {
   background-color: #fff
 }
+
+@media all and (max-width: 400px) {
+    .entry-content p {
+        font-size: 1.25em;
+    }
+}
